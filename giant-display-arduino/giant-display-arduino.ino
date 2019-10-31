@@ -537,8 +537,28 @@ void winner() {
   resetNum();
 }
 
+void greenButtonPressed() {
+  greenButtonState = greenButton.read();
+  
+  if (greenButton.wasPressed()) {
+    gear++;
+  }
+}
+
+void redButtonPressed() {
+  redButtonState = redButton.read();
+
+  if (redButton.wasPressed()) {
+    currentNum = 1;
+  }
+}
+
 void setup() {
   Serial.begin(9600);
+  pinMode(2, INPUT);
+  attachInterrupt(digitalPinToInterrupt(2), greenButtonPressed, CHANGE);
+  pinMode(3, INPUT);
+  attachInterrupt(digitalPinToInterrupt(3), redButtonPressed, CHANGE);
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
@@ -551,9 +571,6 @@ void setup() {
 }
 
 void loop() {
-  greenButtonState = greenButton.read();
-  redButtonState = redButton.read();
-  
   if (currentNum == 0) {
     winner();
   }
@@ -565,13 +582,4 @@ void loop() {
   delay(velocity - minus);
   currentNum--;
   setNumOnPlate(currentNum);
-
-  if (greenButton.wasPressed()) {
-    Serial.println("GREEN");
-    gear++;
-  }
-  if (redButton.wasPressed()) {
-    Serial.println("RED");
-    winner();
-  }
 }
